@@ -58,4 +58,27 @@ class VisitResourceTest {
             .andExpect(jsonPath("$.items[1].petId").value(222))
             .andExpect(jsonPath("$.items[2].petId").value(222));
     }
+
+    // My test case
+       @Test
+    void shouldFetchVisitDateAndDescription() throws Exception {
+        given(visitRepository.findByPetIdIn(asList(111)))
+            .willReturn(
+                asList(
+                    Visit.VisitBuilder.aVisit()
+                        .id(1)
+                        .petId(111)
+                        .date(new java.util.Date())
+                        .description("Diep Huy test")
+                        .build()
+                )
+            );
+
+        mvc.perform(get("/pets/visits?petId=111"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.items[0].id").value(1))
+            .andExpect(jsonPath("$.items[0].petId").value(111))
+            .andExpect(jsonPath("$.items[0].description").value("Diep Huy test"))
+            .andExpect(jsonPath("$.items[0].date").exists());
+    }
 }
