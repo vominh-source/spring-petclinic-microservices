@@ -88,7 +88,7 @@ class PetResourceTest {
 
     @Test
     void shouldHandleRepositoryExceptions() throws Exception {
-        doThrow(new RuntimeException("Database error")).when(petRepository).findById(5);
+        given(petRepository.findById(5)).willThrow(new RuntimeException("Database error"));
 
         mvc.perform(get("/owners/1/pets/5").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isInternalServerError());
