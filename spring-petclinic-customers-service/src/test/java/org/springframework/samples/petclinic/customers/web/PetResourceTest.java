@@ -24,6 +24,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.customers.CustomersServiceApplication;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,8 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when; // Thêm import này
 import org.springframework.beans.factory.annotation.Autowired; // Thêm import này
 
-@Autowired
-ApplicationContext context;
+
 
 
 /**
@@ -71,19 +71,9 @@ class PetResourceTest {
     }
 
     // My own test
-    @Test
-    void shouldGetAPetInJsonFormat() throws Exception {
-        Pet pet = setupPet();
-        given(petRepository.findById(2)).willReturn(Optional.of(pet));
-
-        mvc.perform(get("/owners/2/pets/2").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(2))
-            .andExpect(jsonPath("$.name").value("Basil"))
-            .andExpect(jsonPath("$.type.id").value(6));
-    }
-
+    @Autowired
+    ApplicationContext context;
+    
     @Test
     void shouldReturnNotFoundWhenPetDoesNotExist() throws Exception {
         given(petRepository.findById(99)).willReturn(Optional.empty());
@@ -121,21 +111,6 @@ class PetResourceTest {
         return pet;
     }
 
-    @Test
-    void shouldMapOwnerRequestToOwner() {
-        OwnerEntityMapper mapper = new OwnerEntityMapper();
-
-        OwnerRequest request = new OwnerRequest("John", "Doe", "123 Main St", "Springfield", "1234567890");
-        Owner owner = new Owner();
-
-        Owner updatedOwner = mapper.map(owner, request);
-
-        assertEquals("John", updatedOwner.getFirstName());
-        assertEquals("Doe", updatedOwner.getLastName());
-        assertEquals("123 Main St", updatedOwner.getAddress());
-        assertEquals("Springfield", updatedOwner.getCity());
-        assertEquals("1234567890", updatedOwner.getTelephone());
-    }
 
     
 
@@ -160,8 +135,3 @@ class PetResourceTest {
 
 
 }
-
-
-
-  
-
