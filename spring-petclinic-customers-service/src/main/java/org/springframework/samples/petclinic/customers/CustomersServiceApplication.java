@@ -22,6 +22,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 /**
  * @author Maciej Szarlinski
  */
+
+
+
 @EnableDiscoveryClient
 @SpringBootApplication
 public class CustomersServiceApplication {
